@@ -1,5 +1,10 @@
 package LABANAN;
 
+import java.awt.Graphics;
+
+import entities.Player;
+import entities.Platform;
+
 public class Game implements Runnable{
 
 	private GameWindow GW;
@@ -7,21 +12,35 @@ public class Game implements Runnable{
 	private Thread gameThread;
 	private final int FPS_SET = 120;
 	private final int UPS_SET = 200;
+	private Platform platform;
+	private Player player;
 	
 	public Game() {
-		GP = new GamePanel();
+		initClasses();
+		
+		GP = new GamePanel(this);
 		GW = new GameWindow(GP);
 		GP.requestFocus();
 		startGameLoop();
 	}
 	
+	private void initClasses() {
+	    platform = new Platform(700, 650, 500, 10, 300, 500, 400, 10); // Example platform
+	    player = new Player(750, 200, platform);
+	}
+
 	private void startGameLoop() {
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 	
 	public void update() {
-		GP.updateGame();
+	player.update();
+	}
+
+	public void render(Graphics g) {
+	    player.render(g);
+	    platform.render(g); // Render the platform
 	}
 
 	@Override
@@ -34,7 +53,7 @@ public class Game implements Runnable{
 		
 		int frames = 0;
 		int updates = 0;
-		long lastcheck = System.currentTimeMillis();
+		long lastCheck = System.currentTimeMillis();
 		
 		double deltaU = 0;
 		double deltaF = 0;
@@ -47,26 +66,33 @@ public class Game implements Runnable{
 			deltaF += (currentTime - previousTime) / timePerFrame;
 			previousTime = currentTime;
 			
-			if(deltaU >= 1) {
-				update();
-				updates++;
-				deltaU--;
-			}
-			
-			if(deltaF >= 1) {
-				GP.repaint();
-				deltaF--;
-				frames++;
-			}
-			
-			if(System.currentTimeMillis() - lastcheck >= 1000) {
-				lastcheck = System.currentTimeMillis();
-				System.out.println("FPS: " + frames + " | UPS: " + updates);
-				frames = 0;
-				updates = 0;
-			}
-			
+			 while (deltaU >= 1) {
+		            update();
+		            updates++;
+		            deltaU--;
+		        }
+
+		        // Render the game (FPS)
+		        if (deltaF >= 1) {
+		            GP.repaint();
+		            frames++;
+		            deltaF--;
+		        }
+
+		        // Output debug info every second
+		        if (System.currentTimeMillis() - lastCheck >= 1000) {
+		            lastCheck = System.currentTimeMillis();
+		            System.out.println("FPS: " + frames + " | UPS: " + updates);
+		            frames = 0;
+		            updates = 0;
+		        }
 		}
 		
+	}
+	public void windowFocusLost() {
+		player.resetDirBooleans();
+	}
+	public Player getPlayer() {
+		return player;
 	}
 }

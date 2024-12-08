@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import LABANAN.GamePanel;
+import static utilz.Constant.Directions.*;
+
 
 public class KeyboardInputs implements KeyListener{
 	private GamePanel GP;
@@ -20,28 +22,39 @@ public class KeyboardInputs implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		
-		switch(e.getKeyCode()) {
-		case KeyEvent.VK_W:
-			GP.changeYDelta (-60);
-			break;
-		case KeyEvent.VK_A:
-			GP.changeXDelta (-80);
-			break;
-		case KeyEvent.VK_S:
-			GP.changeYDelta (50);
-			break;
-		case KeyEvent.VK_D:
-			GP.changeXDelta (80);
-			break;
-		}
-
-		
+	    switch(e.getKeyCode()) {
+	        case KeyEvent.VK_A: 
+	        	GP.getGame().getPlayer().setLeft(true); 
+	        	break;
+	        case KeyEvent.VK_S:
+	        	GP.getGame().getPlayer().setCrouch(true);
+	        	break;
+	        case KeyEvent.VK_D: 
+	        	GP.getGame().getPlayer().setRight(true); 
+	        break;
+	        case KeyEvent.VK_SPACE: 
+	        	GP.getGame().getPlayer().setJumped(true); 
+	        	break;
+	    }
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+	    switch(e.getKeyCode()) {
+	        case KeyEvent.VK_A: 
+	        	GP.getGame().getPlayer().setLeft(false); 
+	        	break;
+	        case KeyEvent.VK_S:  
+	        	GP.getGame().getPlayer().setCrouch(false);
+	        	break;
+	        case KeyEvent.VK_D: 
+	        	GP.getGame().getPlayer().setRight(false); 
+	        	break;
+	        case KeyEvent.VK_SPACE: 
+	        	GP.getGame().getPlayer().setJumped(false); 
+	        	break;
+	    }
 	}
+
 
 }
