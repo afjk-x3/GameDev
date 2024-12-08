@@ -15,22 +15,24 @@ public class Player extends Entity {
 	private boolean isOnGround = false; // Whether the player is standing on the platform
 	
    // private BufferedImage img, img2, img3, platImg, aniImg, jumpImg, runImg, sungkitImg, downImg;
-    private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni;
-    private int aniPugayTick2, aniPugayIndex2, aniPugaySpeed2 = 45;
-    private int aniSungkitTick, aniSungkitIndex, aniSungkitSpeed = 21;
+    private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni;
+    private int aniPugayTick, aniPugayIndex, aniPugaySpeed = 45;
+    private int aniSungkitTick, aniSungkitIndex, aniSungkitSpeed = 15;
     private int aniDoTick, aniDownIndex, aniDownSpeed = 21;
     private int aniAtkTick, aniAtkIndex, aniAtkSpeed = 21;//ATTACK
     private int aniTick, aniIndex, aniSpeed = 21; //IDLE
     private int aniJumpTick, aniJumpIndex, aniJumpSpeed = 21;//JUMP
+    private int aniJumpAttkTick, aniJumpAttkIndex, aniJumpAttkSpeed = 21;//JUMP
     private int aniRunTick, aniRunIndex, aniRunSpeed= 21;//MOVE
     private float playerSpeed = 2.0f;
 
-    private int playerAction = IDLE;
-    private boolean left, right;
+    private int playerAction = PUGAY;
+    private boolean left, right, pugay;
     private boolean moving = false, attacking = false, sungkit = false;
 	private Platform platform;
 	
 	private boolean crouching = false;
+	private boolean jumpAttacking = false;
 	private boolean jump = false;
 	private boolean running = false;
 
@@ -53,23 +55,29 @@ public class Player extends Entity {
         
             case RUNNING:
                 // Render running animation
-            	g.drawImage(runAni[aniRunIndex], (int) x - 40 , (int) y , 150 , 110, null);
+            	g.drawImage(runAni[aniRunIndex], (int) x - 40 , (int) y - 40 , 150 , 150, null);
                 break;
             
+            case LAUNCH:
+                // Render attack animation (should be shown in a different layer or position if needed)
+                g.drawImage(jumpAttkAni[aniJumpAttkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
+                break;
+                
             case ATTACK:
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(strikeAni[aniAtkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
                 break;
                 
             case JUMP:
-            	g.drawImage(jumpAni[aniJumpIndex], (int) x, (int) y - 35, 150, 150, null);
+            	g.drawImage(jumpAni[aniJumpIndex], (int) x, (int) y - 40, 150, 150, null);
             	break;
             	
             case SUNGKIT:
-            	g.drawImage(sungkitAni[aniSungkitIndex], (int) x, (int) y - 35, 150, 150, null);
+            	g.drawImage(sungkitAni[aniSungkitIndex], (int) x, (int) y - 40, 150, 150, null);
+            	break;
 
             case IDLE:
-            	g.drawImage(idleAni[aniIndex], (int) x, (int) y, 150, 110, null);
+            	g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
                 break;
                 
             case CROUCH:
@@ -77,7 +85,7 @@ public class Player extends Entity {
                 break;
             default:
                 // Render idle animation
-                g.drawImage(idleAni[aniIndex], (int) x, (int) y, 150, 110, null);
+                g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 110, null);
                 break;
         	}
         }
@@ -85,6 +93,20 @@ public class Player extends Entity {
 
 
     private void updateAnimationTick() {
+    	
+    	aniPugayTick++;
+        if (aniPugayTick >= aniPugaySpeed) {
+            aniPugayTick = 0;
+            aniPugayIndex++;
+            if (aniPugayIndex >= GetSpriteAmount(playerAction)) {
+                aniPugayIndex = 0;
+                // Stop the attack animation once it completes
+                if (pugay) {
+                    playerAction = IDLE; // Change to idle after attack
+                }
+            }
+        }
+    	
     	//IDLE ANIMATION
         aniTick++;
         if (aniTick >= aniSpeed) {
@@ -146,6 +168,34 @@ public class Player extends Entity {
                 }
             }
         }
+        
+        aniSungkitTick++;
+        if (aniSungkitTick >= aniSungkitSpeed) {
+            aniSungkitTick = 0;
+            aniSungkitIndex++;
+            if (aniSungkitIndex >= GetSpriteAmount(playerAction)) {
+                aniSungkitIndex = 0;
+                // Stop the attack animation once it completes
+                if (sungkit) {
+                    sungkit = false; // Reset attacking flag after attack finishes
+                    playerAction = IDLE; // Change to idle after attack
+                }
+            }
+        }
+        
+        aniJumpAttkTick++;
+        if (aniJumpAttkTick >= aniJumpAttkSpeed) {
+            aniJumpAttkTick = 0;
+            aniJumpAttkIndex++;
+            if (aniJumpAttkIndex >= GetSpriteAmount(playerAction)) {
+                aniJumpAttkIndex = 0;
+                // Stop the attack animation once it completes
+                if (jumpAttacking) {
+                    jumpAttacking = false; // Reset attacking flag after attack finishes
+                    playerAction = IDLE; // Change to idle after attack
+                }
+            }
+        }
     }
 
 
@@ -169,35 +219,40 @@ public class Player extends Entity {
         float nextX = x;
         float nextY = y + yVelocity; // Add vertical velocity to position
 
+     // Check collision with the left section of the platform
         if (nextX + 64 > platform.getLeftX() && nextX < platform.getLeftX() + platform.getLeftWidth()) {
             if (nextY + 64 > platform.getLeftY() && y + 64 <= platform.getLeftY()) {
-                // Player is falling onto the platform
-                nextY = platform.getLeftY() - 64; // Position player on top of the platform
-                yVelocity = 0;                // Stop vertical velocity
-                isOnGround = true;            // Mark player as on the ground
+                // Player is falling onto the left section of the platform
+                nextY = platform.getLeftY() - 58;  // Position player on top of the platform
+                yVelocity = 0;                     // Stop vertical velocity
+                isOnGround = true;                 // Mark player as on the ground
             }
-        }         
-        
-     // Check collision with the center rectangle
+        } 
+        // Check collision with the center section of the platform
         else if (nextX + 64 > platform.getX() && nextX < platform.getX() + platform.getWidth()) {
             if (nextY + 64 > platform.getY() && y + 64 <= platform.getY()) {
-                // Player is falling onto the platform
-                nextY = platform.getY() - 64; // Position player on top of the platform
-                yVelocity = 0;                // Stop vertical velocity
-                isOnGround = true;            // Mark player as on the ground
+                // Player is falling onto the center of the platform
+                nextY = platform.getY() - 64;     // Position player on top of the platform
+                yVelocity = 0;                     // Stop vertical velocity
+                isOnGround = true;                 // Mark player as on the ground
             }
-        }
-        
-        else if (nextX + 64 > platform.getX() && nextX < platform.getX() + platform.getWidth()) {
-            if (nextY + 64 > platform.getY() && y + 64 <= platform.getY()) {
-                // Player is falling onto the platform
-                nextY = platform.getY() - 64; // Position player on top of the platform
-                yVelocity = 0;                // Stop vertical velocity
-                isOnGround = true;            // Mark player as on the ground
+        } 
+        // Check if the player is transitioning from left to center platform section
+        else if (nextX + 64 > platform.getLeftX() && nextX < platform.getLeftX() + platform.getLeftWidth()) {
+            // If player is in the left section and moving towards the center
+            if (y + 64 > platform.getLeftY()) {
+                nextY = platform.getLeftY() - 58;  // Position player correctly on the left section
+                yVelocity = 0;                     // Stop vertical velocity
+                isOnGround = true;                 // Mark player as on the ground
+
+                // Force the player to transition to the center position if moving horizontally into the center
+                if (nextX + 64 > platform.getLeftX() && nextX < platform.getLeftX() + platform.getLeftWidth()) {
+                    nextX = platform.getX() - 1000;  // Snap player to the center of the platform
+                }
             }
         }
         else {
-            isOnGround = false; // Player is not on any platform
+            isOnGround = false;  // Player is not on any platform
         }
 
         // Update position
@@ -212,11 +267,18 @@ public class Player extends Entity {
 	        playerAction = ATTACK;  // Attack animation should always take priority
 	    } else if(crouching) {
 	    	playerAction = CROUCH;
+	    }else if(sungkit) {
+	    	System.out.println("tumalna kan a muno");
+	    	playerAction = SUNGKIT;
 	    }else if (moving) {
 	    	System.out.println("running");
 	        playerAction = RUNNING;  // Only run if not attacking
-	    } else if(jump) {
+	    } else if (jump) {
 	    	playerAction = JUMP;
+	    }else if(pugay){
+	    	playerAction = PUGAY;
+	    }else if(jumpAttacking) {
+	    	playerAction = LAUNCH;
 	    }
 	    else {
 	    	//System.out.println("iddle");
@@ -225,19 +287,20 @@ public class Player extends Entity {
 	}
     private void loadAnimations() {
     	
-    	InputStream idle = getClass().getResourceAsStream("/IDLE_RIGHT.png");
-        InputStream pugay = getClass().getResourceAsStream("/PUGAY_DEFAULT.png");
-        InputStream strike = getClass().getResourceAsStream("/STRIKE.png");
-        InputStream run = getClass().getResourceAsStream("/RUN.png");
-        InputStream crouch = getClass().getResourceAsStream("/CROUCH.png");
-        InputStream sungkit = getClass().getResourceAsStream("/SUNGKIT.png");
-        InputStream up = getClass().getResourceAsStream("/JUMP.png");
+    	InputStream idle = getClass().getResourceAsStream("/Sprite_Idle(RIGHT).png");
+        InputStream pugay = getClass().getResourceAsStream("/Sprite_Pugay(RIGHT).png");
+        InputStream strike = getClass().getResourceAsStream("/Sprite_StrikeOnly(RIGHT).png");
+        InputStream run = getClass().getResourceAsStream("/Sprite_Running(RIGHT).png");
+        InputStream crouch = getClass().getResourceAsStream("/Sprite_CrouchAtk(RIGHT).png");
+        InputStream sungkit = getClass().getResourceAsStream("/Sprite_CrouchAttack(RIGHT).png");
+        InputStream up = getClass().getResourceAsStream("/Sprite_Jump.png");
+        InputStream launch = getClass().getResourceAsStream("/Sprite_JumpAtk(RIGHT).png");
 
         try {
             BufferedImage img = ImageIO.read(idle);
             idleAni = new BufferedImage[6]; // Ensure the correct number of frames here
             for (int i = 0; i < idleAni.length; i++) {
-                idleAni[i] = img.getSubimage(i * 64, 0, 64, 50);
+                idleAni[i] = img.getSubimage(i * 64, 0, 64, 64);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -251,7 +314,7 @@ public class Player extends Entity {
 
         try {
         	BufferedImage img2 = ImageIO.read(pugay);
-            pugayAni = new BufferedImage[8]; // Ensure the correct number of frames here
+            pugayAni = new BufferedImage[7]; // Ensure the correct number of frames here
             for (int j = 0; j < pugayAni.length; j++) {
                 pugayAni[j] = img2.getSubimage(j * 64, 0, 64, 64);
             }
@@ -267,7 +330,7 @@ public class Player extends Entity {
 
         try {
         	BufferedImage img3 = ImageIO.read(strike);
-            strikeAni = new BufferedImage[7]; // Ensure the correct number of frames here
+            strikeAni = new BufferedImage[5]; // Ensure the correct number of frames here
             for (int z = 0; z < strikeAni.length; z++) {
                 strikeAni[z] = img3.getSubimage(z * 64, 0, 64, 64);
             }
@@ -299,7 +362,7 @@ public class Player extends Entity {
         
         try {
         	BufferedImage jumpImg = ImageIO.read(up);
-            jumpAni = new BufferedImage[12]; // Ensure the correct number of frames here
+            jumpAni = new BufferedImage[6]; // Ensure the correct number of frames here
             for (int z = 0; z < jumpAni.length; z++) {
                 jumpAni[z] = jumpImg.getSubimage(z * 64, 0, 64, 64);
             }
@@ -314,8 +377,24 @@ public class Player extends Entity {
         }
         
         try {
+        	BufferedImage launchImg = ImageIO.read(launch);
+            jumpAttkAni = new BufferedImage[6]; // Ensure the correct number of frames here
+            for (int z = 0; z < jumpAttkAni.length; z++) {
+                jumpAttkAni[z] = launchImg.getSubimage(z * 64, 0, 64, 64);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                launch.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        try {
         	BufferedImage sungkitImg = ImageIO.read(sungkit);
-            sungkitAni = new BufferedImage[7]; // Ensure the correct number of frames here
+            sungkitAni = new BufferedImage[5]; // Ensure the correct number of frames here
             for (int z = 0; z < sungkitAni.length; z++) {
                 sungkitAni[z] = sungkitImg.getSubimage(z * 64, 0, 64, 64);
             }
@@ -378,17 +457,21 @@ public class Player extends Entity {
         }
     }
     
+public void setLaunch(boolean jumpAttk) {
+    	
+        if (jumpAttk) {
+        	this.jumpAttacking = true;
+            playerAction = LAUNCH; // Switch to attack animation immediately
+            aniIndex = 0; // Reset animation frame for attack
+        }
+    }
+    
     public boolean isCrouching() {
         return crouching;
     }
     
     public void setCrouch(boolean crouch) {
     	this.crouching = crouch;
-    	
-        if (crouching) {
-        		playerAction = CROUCH;
-        		aniIndex = 0;
-        }
     }
 
     public boolean isLeft() {

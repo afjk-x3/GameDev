@@ -31,9 +31,15 @@ public class KeyboardInputs implements KeyListener{
 	        	break;
 	        case KeyEvent.VK_D: 
 	        	GP.getGame().getPlayer().setRight(true); 
-	        break;
+	        	break;
 	        case KeyEvent.VK_SPACE: 
 	        	GP.getGame().getPlayer().setJumped(true); 
+	        	break;
+	        case KeyEvent.VK_C: 
+	        	GP.getGame().getPlayer().setSungkit(true); 
+	        	break;
+	        case KeyEvent.VK_V: 
+	        	GP.getGame().getPlayer().setLaunch(true); 
 	        	break;
 	    }
 	}
@@ -52,6 +58,12 @@ public class KeyboardInputs implements KeyListener{
 	        	break;
 	        case KeyEvent.VK_SPACE: 
 	        	GP.getGame().getPlayer().setJumped(false); 
+	        	break;
+	        case KeyEvent.VK_C: 
+	        	GP.getGame().getPlayer().setSungkit(false); 
+	        	break;
+	        case KeyEvent.VK_V: 
+	        	GP.getGame().getPlayer().setLaunch(false); 
 	        	break;
 	    }
 	}
