@@ -29,7 +29,11 @@ public class MouseInputs implements MouseListener, MouseMotionListener {
     // Other mouse event methods (not necessary to implement for this case)
     @Override public void mouseDragged(MouseEvent e) {}
     @Override public void mousePressed(MouseEvent e) {}
-    @Override public void mouseReleased(MouseEvent e) {}
+    @Override public void mouseReleased(MouseEvent e) {
+    	if (e.getButton() == MouseEvent.BUTTON1) {
+            GP.getGame().getPlayer().setAttacking(false);  // Trigger attack on left mouse button click
+        }
+    }
     @Override public void mouseEntered(MouseEvent e) {}
     @Override public void mouseExited(MouseEvent e) {}
 }

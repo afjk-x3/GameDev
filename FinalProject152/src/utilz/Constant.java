@@ -20,27 +20,33 @@ public class Constant {
 		public static final int BLOCK = 8;
 		public static final int PUGAY = 9;
 		public static final int SUNGKIT = 10;
+		public static final int LAUNCH = 11;
+		public static final int RUNNINGATLEFT = 12;
 		
 		public static int GetSpriteAmount(int player_action) {
 			
 			switch(player_action) {
 			case RUNNING:
 				return 12;
+			case RUNNINGATLEFT:
+				return 12;
 			case IDLE:
 				return 6;
 			case JUMP:
-				return 12;
+				return 6;
 			case CROUCH:
 				return 1;
 //			case GROUND:
 //			case HIT:
 			case ATTACK:
-				return 7;
+				return 5;
+			case LAUNCH:
+				return 6;
 			case SUNGKIT:
-				return 12;
+				return 5;
 			case BLOCK:
 			case PUGAY:
-				return 8;
+				return 7;
 			default:
 				return 1;
 			}

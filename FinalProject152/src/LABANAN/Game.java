@@ -25,7 +25,7 @@ public class Game implements Runnable{
 	}
 	
 	private void initClasses() {
-	    platform = new Platform(700, 650, 500, 10, 300, 500, 400, 10); // Example platform
+	    platform = new Platform(700, 650, 500, 10, 300, 503, 288, 10); // x, y, length, height
 	    player = new Player(750, 200, platform);
 	}
 

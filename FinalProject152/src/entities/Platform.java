@@ -27,7 +27,7 @@ public class Platform {
         g.setColor(Color.GRAY);
         g.fillRect(x, y + 43, width, height);
         g.setColor(Color.BLUE);
-        g.fillRect(leftX - 60, y - 100, width - 160, height);
+        g.fillRect(leftX, leftY + 50, leftWidth, leftHeight);
     }
     
     
