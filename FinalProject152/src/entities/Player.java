@@ -15,6 +15,7 @@ public class Player extends Entity {
 	private boolean isOnGround = false; // Whether the player is standing on the platform
 	
    // private BufferedImage img, img2, img3, platImg, aniImg, jumpImg, runImg, sungkitImg, downImg;
+	private BufferedImage[] runAniLeft;
     private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni;
     private int aniPugayTick, aniPugayIndex, aniPugaySpeed = 45;
     private int aniSungkitTick, aniSungkitIndex, aniSungkitSpeed = 15;
@@ -24,17 +25,20 @@ public class Player extends Entity {
     private int aniJumpTick, aniJumpIndex, aniJumpSpeed = 21;//JUMP
     private int aniJumpAttkTick, aniJumpAttkIndex, aniJumpAttkSpeed = 21;//JUMP
     private int aniRunTick, aniRunIndex, aniRunSpeed= 21;//MOVE
+    private int aniRunLeftTick, aniRunLeftIndex, aniRunLeftSpeed= 21;//MOVE
     private float playerSpeed = 2.0f;
 
     private int playerAction = PUGAY;
     private boolean left, right, pugay;
     private boolean moving = false, attacking = false, sungkit = false;
+    private boolean movingLeft = false;
 	private Platform platform;
 	
 	private boolean crouching = false;
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
 	private boolean running = false;
+	private boolean runningLeft = false;
 
     public Player(float x, float y, Platform platform) {
         super(x, y);
@@ -56,6 +60,11 @@ public class Player extends Entity {
             case RUNNING:
                 // Render running animation
             	g.drawImage(runAni[aniRunIndex], (int) x - 40 , (int) y - 40 , 150 , 150, null);
+                break;
+                
+            case RUNNINGATLEFT:
+                // Render running animation
+            	g.drawImage(runAniLeft[aniRunLeftIndex], (int) x - 40 , (int) y - 40 , 150 , 150, null);
                 break;
             
             case LAUNCH:
@@ -83,9 +92,10 @@ public class Player extends Entity {
             case CROUCH:
             	g.drawImage(downAni[aniDownIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
                 break;
+                
             default:
                 // Render idle animation
-                g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 110, null);
+                g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
                 break;
         	}
         }
@@ -161,8 +171,23 @@ public class Player extends Entity {
             if (aniRunIndex >= GetSpriteAmount(playerAction)) {
                 aniRunIndex = 0;
                 // Stop the attack animation once it completes
+                if (right || left) {
+                    right = false;
+                    left = false;
+                    playerAction = IDLE; // Change to idle after attack
+                }
+            }
+        }
+        
+        aniRunLeftTick++;
+        if (aniRunLeftTick >= aniRunLeftSpeed) {
+            aniRunLeftTick = 0;
+            aniRunLeftIndex++;
+            if (aniRunLeftIndex >= GetSpriteAmount(playerAction)) {
+                aniRunLeftIndex = 0;
+                // Stop the attack animation once it completes
                 if (left || right) {
-                    left = false; // Reset attacking flag after attack finishes
+                    left = false;
                     right = false;
                     playerAction = IDLE; // Change to idle after attack
                 }
@@ -200,7 +225,7 @@ public class Player extends Entity {
 
 
     private void updatePos() {
-        moving = false;
+    	moving = false;
 
         // Horizontal movement
         if (left && !right) {
@@ -219,40 +244,35 @@ public class Player extends Entity {
         float nextX = x;
         float nextY = y + yVelocity; // Add vertical velocity to position
 
-     // Check collision with the left section of the platform
         if (nextX + 64 > platform.getLeftX() && nextX < platform.getLeftX() + platform.getLeftWidth()) {
             if (nextY + 64 > platform.getLeftY() && y + 64 <= platform.getLeftY()) {
-                // Player is falling onto the left section of the platform
-                nextY = platform.getLeftY() - 58;  // Position player on top of the platform
-                yVelocity = 0;                     // Stop vertical velocity
-                isOnGround = true;                 // Mark player as on the ground
+                // Player is falling onto the platform
+                nextY = platform.getLeftY() - 58; // Position player on top of the platform
+                yVelocity = 0;                // Stop vertical velocity
+                isOnGround = true;            // Mark player as on the ground
             }
-        } 
-        // Check collision with the center section of the platform
+        }         
+        
+     // Check collision with the center rectangle
         else if (nextX + 64 > platform.getX() && nextX < platform.getX() + platform.getWidth()) {
             if (nextY + 64 > platform.getY() && y + 64 <= platform.getY()) {
-                // Player is falling onto the center of the platform
-                nextY = platform.getY() - 64;     // Position player on top of the platform
-                yVelocity = 0;                     // Stop vertical velocity
-                isOnGround = true;                 // Mark player as on the ground
+                // Player is falling onto the platform
+                nextY = platform.getY() - 64; // Position player on top of the platform
+                yVelocity = 0;                // Stop vertical velocity
+                isOnGround = true;            // Mark player as on the ground
             }
-        } 
-        // Check if the player is transitioning from left to center platform section
-        else if (nextX + 64 > platform.getLeftX() && nextX < platform.getLeftX() + platform.getLeftWidth()) {
-            // If player is in the left section and moving towards the center
-            if (y + 64 > platform.getLeftY()) {
-                nextY = platform.getLeftY() - 58;  // Position player correctly on the left section
-                yVelocity = 0;                     // Stop vertical velocity
-                isOnGround = true;                 // Mark player as on the ground
-
-                // Force the player to transition to the center position if moving horizontally into the center
-                if (nextX + 64 > platform.getLeftX() && nextX < platform.getLeftX() + platform.getLeftWidth()) {
-                    nextX = platform.getX() - 1000;  // Snap player to the center of the platform
-                }
+        }
+        
+        else if (nextX + 64 > platform.getX() && nextX < platform.getX() + platform.getWidth()) {
+            if (nextY + 64 > platform.getY() && y + 64 <= platform.getY()) {
+                // Player is falling onto the platform
+                nextY = platform.getY() - 64; // Position player on top of the platform
+                yVelocity = 0;                // Stop vertical velocity
+                isOnGround = true;            // Mark player as on the ground
             }
         }
         else {
-            isOnGround = false;  // Player is not on any platform
+            isOnGround = false; // Player is not on any platform
         }
 
         // Update position
@@ -265,7 +285,7 @@ public class Player extends Entity {
 	    if (attacking) {
 	    	System.out.println("attack");
 	        playerAction = ATTACK;  // Attack animation should always take priority
-	    } else if(crouching) {
+	    }else if(crouching) {
 	    	playerAction = CROUCH;
 	    }else if(sungkit) {
 	    	System.out.println("tumalna kan a muno");
@@ -273,7 +293,10 @@ public class Player extends Entity {
 	    }else if (moving) {
 	    	System.out.println("running");
 	        playerAction = RUNNING;  // Only run if not attacking
-	    } else if (jump) {
+	    }else if (movingLeft) {
+	    	System.out.println("running at left");
+	        playerAction = RUNNINGATLEFT;  // Only run if not attacking
+	    }else if (jump) {
 	    	playerAction = JUMP;
 	    }else if(pugay){
 	    	playerAction = PUGAY;
@@ -281,7 +304,7 @@ public class Player extends Entity {
 	    	playerAction = LAUNCH;
 	    }
 	    else {
-	    	//System.out.println("iddle");
+	    	//System.out.println("idle");
 	        playerAction = IDLE;  // Default to idle animation when not moving or attacking
 	    }
 	}
@@ -457,7 +480,7 @@ public class Player extends Entity {
         }
     }
     
-public void setLaunch(boolean jumpAttk) {
+    public void setLaunch(boolean jumpAttk) {
     	
         if (jumpAttk) {
         	this.jumpAttacking = true;
@@ -474,15 +497,6 @@ public void setLaunch(boolean jumpAttk) {
     	this.crouching = crouch;
     }
 
-    public boolean isLeft() {
-        return left;
-    }
-
-    public void setLeft(boolean left) {
-        this.left = left;
-    }
-
-    
     public boolean isJump() {
     	return jump;
     }
@@ -497,6 +511,14 @@ public void setLaunch(boolean jumpAttk) {
 
     public void setRight(boolean right) {
         this.right = right;
+    }
+    
+    public boolean isLeft() {
+        return left;
+    }
+
+    public void setLeft(boolean left) {
+    	this.left = left;
     }
 
     

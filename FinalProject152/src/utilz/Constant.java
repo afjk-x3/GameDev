@@ -21,11 +21,14 @@ public class Constant {
 		public static final int PUGAY = 9;
 		public static final int SUNGKIT = 10;
 		public static final int LAUNCH = 11;
+		public static final int RUNNINGATLEFT = 12;
 		
 		public static int GetSpriteAmount(int player_action) {
 			
 			switch(player_action) {
 			case RUNNING:
+				return 12;
+			case RUNNINGATLEFT:
 				return 12;
 			case IDLE:
 				return 6;
