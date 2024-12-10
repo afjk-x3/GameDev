@@ -25,7 +25,7 @@ public class Game implements Runnable{
 	}
 	
 	private void initClasses() {
-	    platform = new Platform(700, 650, 500, 10, 300, 500, 400, 10); // Example platform
+	    platform = new Platform(700, 650, 500, 10, 300, 503, 288, 10, 1300, 503, 288, 10, 0, 1000, 2000, 10); // x, y, length, height, L/R, fall 
 	    player = new Player(750, 200, platform);
 	}
 
@@ -35,7 +35,11 @@ public class Game implements Runnable{
 	}
 	
 	public void update() {
-	player.update();
+		player.update();
+		
+		if(platform.isPlayerFalling(this)) {
+			platform.respawnPlayer(this); //Respawn the player
+		}
 	}
 
 	public void render(Graphics g) {
