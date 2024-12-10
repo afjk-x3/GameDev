@@ -25,7 +25,7 @@ public class Game implements Runnable{
 	}
 	
 	private void initClasses() {
-	    platform = new Platform(700, 650, 500, 10, 300, 503, 288, 10, 1300, 503, 288, 10, 0, 1000, 2000, 10); // x, y, length, height, L/R, fall 
+	    platform = new Platform(700, 650, 500, 10, 300, 503, 288, 10); // x, y, length, height
 	    player = new Player(750, 200, platform);
 	}
 
@@ -35,12 +35,7 @@ public class Game implements Runnable{
 	}
 	
 	public void update() {
-		player.update();
-		
-		//Check if the player is falling off the platform
-		if(platform.isPlayerFalling(this)) {
-			platform.respawnPlayer(this); //Respawn the player
-		}
+	player.update();
 	}
 
 	public void render(Graphics g) {

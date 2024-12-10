@@ -39,16 +39,9 @@ public class Player extends Entity {
 	private boolean jump = false;
 	private boolean running = false;
 	private boolean runningLeft = false;
-	
-	private float x, y;
-	private int width, height;
 
     public Player(float x, float y, Platform platform) {
         super(x, y);
-        this.x = x;
-        this.y = y;	
-        this.width = 50;
-        this.height = 100;
         this.platform = platform; // Assign the platform for collision checks
         loadAnimations();
     }
@@ -270,10 +263,10 @@ public class Player extends Entity {
             }
         }
         
-        else if (nextX + 64 > platform.getRightX() && nextX < platform.getRightX() + platform.getRightWidth()) {
-            if (nextY + 64 > platform.getRightY() && y + 64 <= platform.getRightY()) {
+        else if (nextX + 64 > platform.getX() && nextX < platform.getX() + platform.getWidth()) {
+            if (nextY + 64 > platform.getY() && y + 64 <= platform.getY()) {
                 // Player is falling onto the platform
-                nextY = platform.getRightY() - 57; // Position player on top of the platform
+                nextY = platform.getY() - 64; // Position player on top of the platform
                 yVelocity = 0;                // Stop vertical velocity
                 isOnGround = true;            // Mark player as on the ground
             }
@@ -528,37 +521,7 @@ public class Player extends Entity {
     	this.left = left;
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
+    
 
     
 }
