@@ -53,7 +53,7 @@ public class Platform {
     public void respawnPlayer(Game game) {
     	Player player = game.getPlayer();
     	
-    	player.setX(x + width / 2);
+    	player.setX((x - 200) + width / 2);
     	player.setY(y - player.getHeight());
     }
     

@@ -41,6 +41,9 @@ public class KeyboardInputs implements KeyListener{
 	        case KeyEvent.VK_V: 
 	        	GP.getGame().getPlayer().setLaunch(true); 
 	        	break;
+	        case KeyEvent.VK_X: 
+	        	GP.getGame().getPlayer().setBlocking(true); 
+	        	break;
 	    }
 	}
 
@@ -64,6 +67,9 @@ public class KeyboardInputs implements KeyListener{
 	        	break;
 	        case KeyEvent.VK_V: 
 	        	GP.getGame().getPlayer().setLaunch(false); 
+	        	break;
+	        case KeyEvent.VK_X: 
+	        	GP.getGame().getPlayer().setBlocking(false); 
 	        	break;
 	    }
 	}

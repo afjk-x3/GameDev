@@ -17,11 +17,11 @@ public class Constant {
 		public static final int GROUND = 5;
 		public static final int HIT = 5;
 		public static final int ATTACK = 7;
-		public static final int BLOCK = 8;
-		public static final int PUGAY = 9;
-		public static final int SUNGKIT = 10;
-		public static final int LAUNCH = 11;
-		public static final int RUNNINGATLEFT = 12;
+		public static final int PUGAY = 8;
+		public static final int SUNGKIT = 9;
+		public static final int LAUNCH = 10;
+		public static final int RUNNINGATLEFT = 11;
+		public static final int DOWNBLOCK = 12;
 		
 		public static int GetSpriteAmount(int player_action) {
 			
@@ -44,7 +44,8 @@ public class Constant {
 				return 6;
 			case SUNGKIT:
 				return 5;
-			case BLOCK:
+			case DOWNBLOCK:
+				return 1;
 			case PUGAY:
 				return 7;
 			default:

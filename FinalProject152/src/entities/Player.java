@@ -19,7 +19,7 @@ public class Player extends Entity {
 	
    // private BufferedImage img, img2, img3, platImg, aniImg, jumpImg, runImg, sungkitImg, downImg;
 	private BufferedImage[] runAniLeft;
-    private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni;
+    private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni, idleBlockAni, downBlockAni;
     private int aniPugayTick, aniPugayIndex, aniPugaySpeed = 45;
     private int aniSungkitTick, aniSungkitIndex, aniSungkitSpeed = 15;
     private int aniDoTick, aniDownIndex, aniDownSpeed = 21;
@@ -28,6 +28,8 @@ public class Player extends Entity {
     private int aniJumpTick, aniJumpIndex, aniJumpSpeed = 21;//JUMP
     private int aniJumpAttkTick, aniJumpAttkIndex, aniJumpAttkSpeed = 21;//JUMP
     private int aniRunTick, aniRunIndex, aniRunSpeed= 21;//MOVE
+    private int aniIdleBlockTick, aniIdleBlockIndex, aniIdleBlockSpeed= 21;//idle block
+    private int aniDownBlockTick, aniDownBlockIndex, aniDownBlockSpeed= 21;//down block
     private int aniRunLeftTick, aniRunLeftIndex, aniRunLeftSpeed= 21;//MOVE
     private float playerSpeed = 2.0f;
 
@@ -37,6 +39,9 @@ public class Player extends Entity {
     private boolean movingLeft = false;
 	private Platform platform;
 	
+	private boolean downBlock = false;
+	private boolean idleBlock = false;
+	private boolean blocking = false;
 	private boolean crouching = false;
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
@@ -98,6 +103,10 @@ public class Player extends Entity {
                 
             case CROUCH:
             	g.drawImage(downAni[aniDownIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
+                break;
+               
+            case DOWNBLOCK:
+            	g.drawImage(downBlockAni[aniDownBlockIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
                 break;
                 
             default:
@@ -228,6 +237,7 @@ public class Player extends Entity {
                 }
             }
         }
+        
     }
 
 
@@ -307,6 +317,8 @@ public class Player extends Entity {
 	    	playerAction = JUMP;
 	    }else if(pugay){
 	    	playerAction = PUGAY;
+	    }else if(downBlock){
+	    	playerAction = DOWNBLOCK;
 	    }else if(jumpAttacking) {
 	    	playerAction = LAUNCH;
 	    }
@@ -325,6 +337,7 @@ public class Player extends Entity {
         InputStream sungkit = getClass().getResourceAsStream("/Sprite_CrouchAttack(RIGHT).png");
         InputStream up = getClass().getResourceAsStream("/Sprite_Jump.png");
         InputStream launch = getClass().getResourceAsStream("/Sprite_JumpAtk(RIGHT).png");
+        InputStream downBlock = getClass().getResourceAsStream("/Sprite_CrouchBlock.png");
 
         try {
             BufferedImage img = ImageIO.read(idle);
@@ -453,6 +466,22 @@ public class Player extends Entity {
                 e.printStackTrace();
             }
         }
+        
+        try {
+        	BufferedImage downBlockImg = ImageIO.read(downBlock);
+            downBlockAni = new BufferedImage[1]; // Ensure the correct number of frames here
+            for (int z = 0; z < downAni.length; z++) {
+                downBlockAni[z] = downBlockImg.getSubimage(z * 64, 0, 64, 64);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                downBlock.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 	
     }
 
@@ -502,6 +531,14 @@ public class Player extends Entity {
     
     public void setCrouch(boolean crouch) {
     	this.crouching = crouch;
+    }
+    
+    public boolean isBlocking() {
+        return downBlock;
+    }
+    
+    public void setBlocking(boolean blocking) {
+    	this.downBlock = blocking;
     }
 
     public boolean isJump() {
