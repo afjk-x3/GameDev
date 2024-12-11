@@ -7,7 +7,6 @@ import entities.Platform;
 
 public class Game implements Runnable{
 
-	private GameWindow GW;
 	private GamePanel GP;
 	private Thread gameThread;
 	private final int FPS_SET = 120;
@@ -19,13 +18,13 @@ public class Game implements Runnable{
 		initClasses();
 		
 		GP = new GamePanel(this);
-		GW = new GameWindow(GP);
+		new GameWindow(GP);
 		GP.requestFocus();
 		startGameLoop();
 	}
 	
 	private void initClasses() {
-	    platform = new Platform(700, 650, 500, 0, 250, 503, 288, 1, 1350, 503, 288, 1, 0, 1000, 2000, 10); // x, y, length, height, L/R, fall 
+	    platform = new Platform(700, 650, 500, 0, 250, 503, 288, 0, 1350, 503, 288, 0, 0, 1000, 2000, 10); // x, y, length, height, L/R, fall 
 	    player = new Player(750, 200, platform);
 	}
 

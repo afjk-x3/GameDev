@@ -2,9 +2,7 @@ package Inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import LABANAN.GamePanel;
-import static utilz.Constant.Directions.*;
 
 
 public class KeyboardInputs implements KeyListener{
@@ -24,13 +22,15 @@ public class KeyboardInputs implements KeyListener{
 		
 	    switch(e.getKeyCode()) {
 	        case KeyEvent.VK_A: 
-	        	GP.getGame().getPlayer().setLeft(true); 
+	        	GP.getGame().getPlayer().setLeft(true);
+	        	GP.getGame().getPlayer().setRight(false);
 	        	break;
 	        case KeyEvent.VK_S:
 	        	GP.getGame().getPlayer().setCrouch(true);
 	        	break;
 	        case KeyEvent.VK_D: 
-	        	GP.getGame().getPlayer().setRight(true); 
+	        	GP.getGame().getPlayer().setRight(true);
+	        	GP.getGame().getPlayer().setLeft(false);
 	        	break;
 	        case KeyEvent.VK_SPACE: 
 	        	GP.getGame().getPlayer().setJumped(true); 
@@ -40,9 +40,6 @@ public class KeyboardInputs implements KeyListener{
 	        	break;
 	        case KeyEvent.VK_V: 
 	        	GP.getGame().getPlayer().setLaunch(true); 
-	        	break;
-	        case KeyEvent.VK_X: 
-	        	GP.getGame().getPlayer().setBlocking(true); 
 	        	break;
 	    }
 	}
@@ -67,9 +64,6 @@ public class KeyboardInputs implements KeyListener{
 	        	break;
 	        case KeyEvent.VK_V: 
 	        	GP.getGame().getPlayer().setLaunch(false); 
-	        	break;
-	        case KeyEvent.VK_X: 
-	        	GP.getGame().getPlayer().setBlocking(false); 
 	        	break;
 	    }
 	}

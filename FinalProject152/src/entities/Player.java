@@ -1,6 +1,5 @@
 package entities;
 
-import static utilz.Constant.Directions.*;
 import static utilz.Constant.PlayerConstants.*;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -17,19 +16,20 @@ public class Player extends Entity {
 	private float x, y;
 	private int width, height;
 	
-   // private BufferedImage img, img2, img3, platImg, aniImg, jumpImg, runImg, sungkitImg, downImg;
+ 
 	private BufferedImage[] runAniLeft;
-    private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni, idleBlockAni, downBlockAni;
+    private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni, downBlockAni;
+    
     private int aniPugayTick, aniPugayIndex, aniPugaySpeed = 45;
     private int aniSungkitTick, aniSungkitIndex, aniSungkitSpeed = 15;
-    private int aniDoTick, aniDownIndex, aniDownSpeed = 21;
+    private int aniDownIndex;
     private int aniAtkTick, aniAtkIndex, aniAtkSpeed = 21;//ATTACK
     private int aniTick, aniIndex, aniSpeed = 21; //IDLE
     private int aniJumpTick, aniJumpIndex, aniJumpSpeed = 21;//JUMP
     private int aniJumpAttkTick, aniJumpAttkIndex, aniJumpAttkSpeed = 21;//JUMP
     private int aniRunTick, aniRunIndex, aniRunSpeed= 21;//MOVE
-    private int aniIdleBlockTick, aniIdleBlockIndex, aniIdleBlockSpeed= 21;//idle block
-    private int aniDownBlockTick, aniDownBlockIndex, aniDownBlockSpeed= 21;//down block
+ 
+    private int  aniDownBlockIndex;
     private int aniRunLeftTick, aniRunLeftIndex, aniRunLeftSpeed= 21;//MOVE
     private float playerSpeed = 2.0f;
 
@@ -40,13 +40,9 @@ public class Player extends Entity {
 	private Platform platform;
 	
 	private boolean downBlock = false;
-	private boolean idleBlock = false;
-	private boolean blocking = false;
 	private boolean crouching = false;
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
-	private boolean running = false;
-	private boolean runningLeft = false;
 
     public Player(float x, float y, Platform platform) {
         super(x, y);
@@ -68,7 +64,11 @@ public class Player extends Entity {
     	
         // Render based on the current player action (IDLE, RUNNING, or ATTACK)
         	switch(playerAction) {
-        
+
+            case IDLE:
+            	g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
+                break;
+                
             case RUNNING:
                 // Render running animation
             	g.drawImage(runAni[aniRunIndex], (int) x - 40 , (int) y - 40 , 150 , 150, null);
@@ -78,7 +78,11 @@ public class Player extends Entity {
                 // Render running animation
             	g.drawImage(runAniLeft[aniRunLeftIndex], (int) x - 40 , (int) y - 40 , 150 , 150, null);
                 break;
-            
+                
+            case JUMP:
+            	g.drawImage(jumpAni[aniJumpIndex], (int) x, (int) y - 40, 150, 150, null);
+            	break;
+            	
             case LAUNCH:
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(jumpAttkAni[aniJumpAttkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
@@ -88,18 +92,10 @@ public class Player extends Entity {
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(strikeAni[aniAtkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
                 break;
-                
-            case JUMP:
-            	g.drawImage(jumpAni[aniJumpIndex], (int) x, (int) y - 40, 150, 150, null);
-            	break;
-            	
+             
             case SUNGKIT:
             	g.drawImage(sungkitAni[aniSungkitIndex], (int) x, (int) y - 40, 150, 150, null);
             	break;
-
-            case IDLE:
-            	g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
-                break;
                 
             case CROUCH:
             	g.drawImage(downAni[aniDownIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
@@ -115,10 +111,18 @@ public class Player extends Entity {
                 break;
         	}
         }
-    
-
 
     private void updateAnimationTick() {
+    	
+    	//IDLE ANIMATION
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= GetSpriteAmount(playerAction)) {
+                aniIndex = 0;
+            }
+        }
     	
     	aniPugayTick++;
         if (aniPugayTick >= aniPugaySpeed) {
@@ -129,22 +133,6 @@ public class Player extends Entity {
                 // Stop the attack animation once it completes
                 if (pugay) {
                     playerAction = IDLE; // Change to idle after attack
-                }
-            }
-        }
-    	
-    	//IDLE ANIMATION
-        aniTick++;
-        if (aniTick >= aniSpeed) {
-            aniTick = 0;
-            aniIndex++;
-            if (aniIndex >= GetSpriteAmount(playerAction)) {
-                aniIndex = 0;
-
-                // If attack animation is done, stop attacking and set playerAction back to idle or running
-                if (playerAction == ATTACK) {
-                    attacking = false; // Reset attacking flag
-                    playerAction = IDLE; // Change action to idle after attack
                 }
             }
         }
@@ -159,7 +147,6 @@ public class Player extends Entity {
                 // Stop the attack animation once it completes
                 if (attacking) {
                     attacking = false; // Reset attacking flag after attack finishes
-                    playerAction = IDLE; // Change to idle after attack
                 }
             }
         }
@@ -171,11 +158,6 @@ public class Player extends Entity {
             aniJumpIndex++;
             if (aniJumpIndex >= GetSpriteAmount(playerAction)) {
                 aniJumpIndex = 0;
-                // Stop the attack animation once it completes
-                if (jump) {
-                    jump = false; // Reset attacking flag after attack finishes
-                    playerAction = IDLE; // Change to idle after attack
-                }
             }
         }
         
@@ -187,11 +169,10 @@ public class Player extends Entity {
             if (aniRunIndex >= GetSpriteAmount(playerAction)) {
                 aniRunIndex = 0;
                 // Stop the attack animation once it completes
-                if (right || left) {
-                    right = false;
-                    left = false;
-                    playerAction = IDLE; // Change to idle after attack
-                }
+//                if (right && left) {
+//                    right = false;
+//                    left = false;
+//                }
             }
         }
         
@@ -202,11 +183,10 @@ public class Player extends Entity {
             if (aniRunLeftIndex >= GetSpriteAmount(playerAction)) {
                 aniRunLeftIndex = 0;
                 // Stop the attack animation once it completes
-                if (left || right) {
-                    left = false;
-                    right = false;
-                    playerAction = IDLE; // Change to idle after attack
-                }
+//                if (left && right) {
+//                    left = false;
+//                    right = false;
+//                }
             }
         }
         
@@ -219,7 +199,6 @@ public class Player extends Entity {
                 // Stop the attack animation once it completes
                 if (sungkit) {
                     sungkit = false; // Reset attacking flag after attack finishes
-                    playerAction = IDLE; // Change to idle after attack
                 }
             }
         }
@@ -233,7 +212,6 @@ public class Player extends Entity {
                 // Stop the attack animation once it completes
                 if (jumpAttacking) {
                     jumpAttacking = false; // Reset attacking flag after attack finishes
-                    playerAction = IDLE; // Change to idle after attack
                 }
             }
         }
@@ -244,15 +222,17 @@ public class Player extends Entity {
     private void updatePos() {
     	moving = false;
 
-        // Horizontal movement
-        if (left && !right) {
-            x -= playerSpeed;
-            moving = true;
-        } else if (right && !left) {
-            x += playerSpeed;
-            moving = true;
-        }
+    	if (left && !right) {
+    	    x -= playerSpeed;
+    	    moving = true;
+    	    movingLeft = true; // Indicate moving left
+    	} else if (right && !left) {
+    	    x += playerSpeed;
+    	    moving = true;
+    	    movingLeft = false; // Indicate moving right
+    	}
 
+        
         // Apply gravity if not on the ground
         if (!isOnGround) {
             yVelocity += gravity;  // Increase velocity due to gravity
@@ -298,41 +278,39 @@ public class Player extends Entity {
     }
 
 
-	private void setAnimation() {
-	    if (attacking) {
-	    	System.out.println("attack");
-	        playerAction = ATTACK;  // Attack animation should always take priority
-	    }else if(crouching) {
-	    	playerAction = CROUCH;
-	    }else if(sungkit) {
-	    	System.out.println("tumalna kan a muno");
-	    	playerAction = SUNGKIT;
-	    }else if (moving) {
-	    	System.out.println("running");
-	        playerAction = RUNNING;  // Only run if not attacking
-	    }else if (movingLeft) {
-	    	System.out.println("running at left");
-	        playerAction = RUNNINGATLEFT;  // Only run if not attacking
-	    }else if (jump) {
-	    	playerAction = JUMP;
-	    }else if(pugay){
-	    	playerAction = PUGAY;
-	    }else if(downBlock){
-	    	playerAction = DOWNBLOCK;
-	    }else if(jumpAttacking) {
-	    	playerAction = LAUNCH;
-	    }
-	    else {
-	    	//System.out.println("idle");
-	        playerAction = IDLE;  // Default to idle animation when not moving or attacking
-	    }
-	}
+    private void setAnimation() {
+        if (attacking) {
+            playerAction = ATTACK; // Attack animation
+        } else if (crouching) {
+            playerAction = CROUCH;
+        } else if (sungkit) {
+            playerAction = SUNGKIT;
+        } else if (moving) {
+            if (movingLeft) {
+                playerAction = RUNNINGATLEFT; // Running left animation
+            } else {
+                playerAction = RUNNING; // Running right animation
+            }
+        } else if (jump) {
+            playerAction = JUMP;
+        } else if (pugay) {
+            playerAction = PUGAY;
+        } else if (downBlock) {
+            playerAction = DOWNBLOCK;
+        } else if (jumpAttacking) {
+            playerAction = LAUNCH;
+        } else {
+            playerAction = IDLE; // Default idle
+        }
+    }
+
     private void loadAnimations() {
     	
     	InputStream idle = getClass().getResourceAsStream("/Sprite_Idle(RIGHT).png");
         InputStream pugay = getClass().getResourceAsStream("/Sprite_Pugay(RIGHT).png");
         InputStream strike = getClass().getResourceAsStream("/Sprite_StrikeOnly(RIGHT).png");
         InputStream run = getClass().getResourceAsStream("/Sprite_Running(RIGHT).png");
+        InputStream runLeft = getClass().getResourceAsStream("/Sprite_Running(LEFT).png");
         InputStream crouch = getClass().getResourceAsStream("/Sprite_CrouchAtk(RIGHT).png");
         InputStream sungkit = getClass().getResourceAsStream("/Sprite_CrouchAttack(RIGHT).png");
         InputStream up = getClass().getResourceAsStream("/Sprite_Jump.png");
@@ -398,6 +376,22 @@ public class Player extends Entity {
         } finally {
             try {
                 run.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        try {
+        	BufferedImage runLeftImg = ImageIO.read(runLeft);
+            runAniLeft = new BufferedImage[12]; // Ensure the correct number of frames here
+            for (int z = 0; z < runAniLeft.length; z++) {
+                runAniLeft[z] = runLeftImg.getSubimage(z * 64, 0, 64, 64);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                runLeft.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -503,7 +497,7 @@ public class Player extends Entity {
     	if(sungkit) {
     		this.sungkit = true;
     		playerAction = SUNGKIT;
-    		aniIndex = 0;
+//    		aniIndex = 0;
     	}
     }
 
@@ -512,7 +506,7 @@ public class Player extends Entity {
         if (attacking) {
         	this.attacking = true;
             playerAction = ATTACK; // Switch to attack animation immediately
-            aniIndex = 0; // Reset animation frame for attack
+//            aniIndex = 0; // Reset animation frame for attack
         }
     }
     
@@ -521,14 +515,13 @@ public class Player extends Entity {
         if (jumpAttk) {
         	this.jumpAttacking = true;
             playerAction = LAUNCH; // Switch to attack animation immediately
-            aniIndex = 0; // Reset animation frame for attack
+//            aniIndex = 0; // Reset animation frame for attack
         }
     }
     
     public boolean isCrouching() {
         return crouching;
     }
-    
     public void setCrouch(boolean crouch) {
     	this.crouching = crouch;
     }
@@ -536,7 +529,6 @@ public class Player extends Entity {
     public boolean isBlocking() {
         return downBlock;
     }
-    
     public void setBlocking(boolean blocking) {
     	this.downBlock = blocking;
     }
@@ -544,7 +536,6 @@ public class Player extends Entity {
     public boolean isJump() {
     	return jump;
     }
-    
     public void setJump(boolean jump) {
     	this.jump = jump;
     }
@@ -552,7 +543,6 @@ public class Player extends Entity {
     public boolean isRight() {
         return right;
     }
-
     public void setRight(boolean right) {
         this.right = right;
     }
@@ -560,7 +550,6 @@ public class Player extends Entity {
     public boolean isLeft() {
         return left;
     }
-
     public void setLeft(boolean left) {
     	this.left = left;
     }
@@ -568,7 +557,6 @@ public class Player extends Entity {
     public float getX() {
         return x;
     }
-
     public void setX(float x) {
         this.x = x;
     }
@@ -576,7 +564,6 @@ public class Player extends Entity {
     public float getY() {
         return y;
     }
-
     public void setY(float y) {
         this.y = y;
     }
@@ -584,7 +571,6 @@ public class Player extends Entity {
     public int getWidth() {
         return width;
     }
-
     public void setWidth(int width) {
         this.width = width;
     }
@@ -592,7 +578,6 @@ public class Player extends Entity {
     public int getHeight() {
         return height;
     }
-
     public void setHeight(int height) {
         this.height = height;
     }

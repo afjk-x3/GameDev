@@ -13,10 +13,12 @@ import Inputs.MouseInputs;
 
 public class GamePanel extends JPanel {
 
-    private MouseInputs MI;
+	private static final long serialVersionUID = 2233953016340222282L;
+	
+	private MouseInputs MI;
     private Game game;
     private Image bg; // Declare the image variable for the background
-    private Image mainPlatform;
+    private Image mainPlatform, leftPlatform, rightPlatform;
 
     public GamePanel(Game game) {
         MI = new MouseInputs(this);
@@ -47,6 +49,8 @@ public class GamePanel extends JPanel {
     private void loadPlatformImage() {
     	try {
     		mainPlatform = ImageIO.read(getClass().getResourceAsStream("/PLATFORM_ORIGINAL.png"));
+    		leftPlatform = ImageIO.read(getClass().getResourceAsStream("/PLATFORM_ORIGINAL.png"));
+    		rightPlatform = ImageIO.read(getClass().getResourceAsStream("/PLATFORM_ORIGINAL.png"));
     	} catch (IOException e) {
     		e.printStackTrace();
     		System.out.println("Error loading background image");
@@ -70,6 +74,8 @@ public class GamePanel extends JPanel {
         if (bg != null) {
             g.drawImage(bg, 0, 0, getWidth(), getHeight(), null);
             g.drawImage(mainPlatform, 524, 345, 840, 500, null);
+            g.drawImage(leftPlatform, 150, 206, 482, 500, null);
+            g.drawImage(rightPlatform, 1250, 206, 482, 500, null);
         }
 
         // Render the game elements
