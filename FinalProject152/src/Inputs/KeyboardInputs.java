@@ -10,7 +10,7 @@ public class KeyboardInputs implements KeyListener {
     private GamePanel GP;
     private long lastAttackTimePlayer = 0;
     private long lastAttackTimePlayer2 = 0;  // Store the last time Player 2's attack was triggered
-    private static final long ATTACK_COOLDOWN = 1000;  // 3 seconds cooldown in milliseconds
+    private static final long COOLDOWN = 1000;  // 3 seconds cooldown in milliseconds
 
     public KeyboardInputs(GamePanel GP) {
         this.GP = GP;
@@ -39,31 +39,31 @@ public class KeyboardInputs implements KeyListener {
                 GP.getGame().getPlayer().setLeft(false);
                 break;
             case KeyEvent.VK_F:
-            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer >= COOLDOWN) {
                     GP.getGame().getPlayer().setAttacking(true);  // Trigger attack
                     lastAttackTimePlayer = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_G:
-            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer >= COOLDOWN) {
                     GP.getGame().getPlayer().setBlocking(true);  // Trigger attack
                     lastAttackTimePlayer = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_W:
-            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer >= COOLDOWN) {
                     GP.getGame().getPlayer().setJumped(true);  // Trigger attack
                     lastAttackTimePlayer = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_C:
-            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer >= COOLDOWN) {
                     GP.getGame().getPlayer().setSungkit(true);  // Trigger attack
                     lastAttackTimePlayer = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_V:
-            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer >= COOLDOWN) {
                     GP.getGame().getPlayer().setLaunch(true);  // Trigger attack
                     lastAttackTimePlayer = currentTime;  // Update the last attack time
                 }
@@ -84,33 +84,33 @@ public class KeyboardInputs implements KeyListener {
                 GP.getGame().getPlayer2().setLeft(false);
                 break;
             case KeyEvent.VK_UP:
-            	if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer2 >= COOLDOWN) {
                     GP.getGame().getPlayer2().setJumped(true);  // Trigger attack
                     lastAttackTimePlayer2 = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_J:
                 // Check if enough time has passed since the last attack
-                if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+                if (currentTime - lastAttackTimePlayer2 >= COOLDOWN) {
                     GP.getGame().getPlayer2().setAttacking(true);  // Trigger attack
                     lastAttackTimePlayer2 = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_K:
                 // Check if enough time has passed since the last attack
-                if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+                if (currentTime - lastAttackTimePlayer2 >= COOLDOWN) {
                     GP.getGame().getPlayer2().setSungkit(true);  // Trigger attack
                     lastAttackTimePlayer2 = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_L:
-            	if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer2 >= COOLDOWN) {
                     GP.getGame().getPlayer2().setLaunch(true);  // Trigger attack
                     lastAttackTimePlayer2 = currentTime;  // Update the last attack time
                 }
                 break;
             case KeyEvent.VK_P:
-            	if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+            	if (currentTime - lastAttackTimePlayer2 >= COOLDOWN) {
                     GP.getGame().getPlayer2().setBlocking(true);  // Trigger attack
                     lastAttackTimePlayer2 = currentTime;  // Update the last attack time
                 }
