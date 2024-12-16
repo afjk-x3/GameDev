@@ -41,6 +41,8 @@ public class Platform {
         g.fillRect(fallX, fallY + 10, fallWidth, fallHeight);
     }
     
+    
+    //PLAYER1
     public boolean isPlayerFalling(Game game) {
     	Player player = game.getPlayer();
     	
@@ -49,12 +51,34 @@ public class Platform {
     	}
     	return false;
     }
+    //PLAYER2
+    public boolean isPlayerFalling2(Game game) {
+ 	
+ 	PlayerTwo player2 = game.getPlayer2();
+    	
+    	if(
+    		player2.getY() > fallY + fallHeight) {
+    		return true;
+    	}
+    	
+    	return false;
+    		
+    }
+    //RESPAWN p1
     
     public void respawnPlayer(Game game) {
     	Player player = game.getPlayer();
     	
     	player.setX((x - 200) + width / 2);
     	player.setY(y - player.getHeight());
+    }
+    
+  //PLAYER 2
+    public void respawnPlayer2(Game game) {
+    	PlayerTwo player2 = game.getPlayer2();
+    	player2.setX((x + 100) + width / 2);
+    	player2.setY(y - player2.getHeight());
+ 
     }
     
     // Getters for collision detection

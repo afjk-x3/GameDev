@@ -3,6 +3,7 @@ package LABANAN;
 import java.awt.Graphics;
 
 import entities.Player;
+import entities.PlayerTwo;
 import entities.Platform;
 
 public class Game implements Runnable{
@@ -13,6 +14,7 @@ public class Game implements Runnable{
     private final int UPS_SET = 200;
     private Platform platform;
     private Player player;
+    private PlayerTwo player2;
     
     public Game() {
         initClasses();
@@ -26,6 +28,7 @@ public class Game implements Runnable{
     private void initClasses() {
         platform = new Platform(700, 650, 500, 0, 250, 503, 288, 0, 1350, 503, 288, 0, 0, 5000, 10000, 10); // x, y, length, height, L/R, fall 
         player = new Player(750, 200, platform);
+        player2 = new PlayerTwo(1000,200, platform);
     }
 
     private void startGameLoop() {
@@ -39,10 +42,17 @@ public class Game implements Runnable{
         if(platform.isPlayerFalling(this)) {
             platform.respawnPlayer(this); //Respawn the player
         }
+        
+        player2.update2();
+        if(platform.isPlayerFalling2(this)) {
+            platform.respawnPlayer2(this); //Respawn the player2
+        }
+        
     }
 
     public void render(Graphics g) {
         player.render(g);
+        player2.render(g);
         platform.render(g); // Render the platform
     }
 
@@ -94,8 +104,13 @@ public class Game implements Runnable{
     }
     public void windowFocusLost() {
         player.resetDirBooleans();
+        player2.resetDirBooleans();
     }
     public Player getPlayer() {
         return player;
+    }
+    
+    public PlayerTwo getPlayer2() {
+        return player2;
     }
 }

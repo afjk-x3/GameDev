@@ -10,7 +10,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 
-public class Player extends Entity {
+public class PlayerTwo extends Entity {
 	private float gravity = 0.4f;  // Gravity force pulling the player down
 	private float yVelocity = 9f;   // Vertical velocity
 	private boolean isOnGround = false; // Whether the player is standing on the platform
@@ -46,28 +46,31 @@ public class Player extends Entity {
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
 	
-	 // Hitbox variables
-    private int hitboxOffsetX = 30; // Adjust as needed
-    private int hitboxOffsetY = 0; // Adjust as needed
-    private int hitboxWidth = 60; // Adjust as needed
-    private int hitboxHeight = 110; // Adjust as needed
+	
+
+	  // Hitbox variables
+	 private int hitboxOffsetX = 60;// Adjust as needed
+	 private int hitboxOffsetY = 0; // Adjust as needed
+	 private int hitboxWidth = 60; // Adjust as needed
+	 private int hitboxHeight = 110; // Adjust as needed
     
 
-    public Player(float x, float y, Platform platform) {
+    public PlayerTwo(float x, float y, Platform platform) {
         super(x, y);
         this.x = x;
         this.y = y;	
         this.width = 50;
         this.height = 100;
         this.platform = platform; // Assign the platform for collision checks
-        loadAnimations();
+        loadAnimations2();
+        
     }
 
-    public void update() {
+    public void update2() {
         updatePos();
         updateAnimationTick();
         setAnimation();
-        
+      
     }
 
     public void render(Graphics g) {
@@ -124,7 +127,6 @@ public class Player extends Entity {
         	// Draw the hitbox (for debugging)
             g.setColor(Color.RED);
             g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-            
         }
 
     private void updateAnimationTick() {
@@ -319,18 +321,18 @@ public class Player extends Entity {
         }
     }
 
-    private void loadAnimations() {
+    private void loadAnimations2() {
     	
-    	InputStream idle = getClass().getResourceAsStream("/Sprite_Idle(RIGHT).png");
+    	InputStream idle = getClass().getResourceAsStream("/Sprite_Idle(LEFT).png");
         InputStream pugay = getClass().getResourceAsStream("/Sprite_Pugay(RIGHT).png");
-        InputStream strike = getClass().getResourceAsStream("/Sprite_StrikeOnly(RIGHT).png");
+        InputStream strike = getClass().getResourceAsStream("/Sprite_StrikeOnly(LEFT).png");
         InputStream run = getClass().getResourceAsStream("/Sprite_Running(RIGHT).png");
         InputStream runLeft = getClass().getResourceAsStream("/Sprite_Running(LEFT).png");
-        InputStream crouch = getClass().getResourceAsStream("/Sprite_CrouchAtk(RIGHT).png");
-        InputStream sungkit = getClass().getResourceAsStream("/Sprite_CrouchAttack(RIGHT).png");
+        InputStream crouch = getClass().getResourceAsStream("/Sprite_CrouchAtk(RED-LEFT}.png");
+        InputStream sungkit = getClass().getResourceAsStream("/Sprite_CrouchAttack(LEFT}.png");
         InputStream up = getClass().getResourceAsStream("/Sprite_Jump.png");
-        InputStream launch = getClass().getResourceAsStream("/Sprite_JumpAtk(RIGHT).png");
-        InputStream downBlock = getClass().getResourceAsStream("/Sprite_CrouchBlock.png");
+        InputStream launch = getClass().getResourceAsStream("/Sprite_JumpAtk(LEFT).png");
+        InputStream downBlock = getClass().getResourceAsStream("/Sprite_CrouchBlock(LEFT).png");
 
         try {
             BufferedImage img = ImageIO.read(idle);
@@ -493,9 +495,8 @@ public class Player extends Entity {
         }
 	
     }
+    
 
-    
-    
     public void resetDirBooleans() {
         left = false;
         right = false;
@@ -518,6 +519,11 @@ public class Player extends Entity {
     	}
     }
 
+    
+    public boolean isAttacking() {
+        return attacking;
+    }
+    
     public void setAttacking(boolean attacking) {
     	
         if (attacking) {
