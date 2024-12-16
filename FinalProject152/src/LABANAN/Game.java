@@ -26,11 +26,10 @@ public class Game implements Runnable{
     }
     
     private void initClasses() {
-        platform = new Platform(700, 650, 500, 0, 250, 503, 288, 0, 1350, 503, 288, 0, 0, 5000, 10000, 10); // x, y, length, height, L/R, fall 
-        player = new Player(750, 200, platform);
-        player2 = new PlayerTwo(1000,200, platform);
+        platform = new Platform(700, 650, 503, 0, 250, 503, 288, 0, 1350, 503, 288, 0, 0, 5000, 10000, 10); // x, y, length, height, L/R, fall 
+        player = new Player(745, 200, platform);
+        player2 = new PlayerTwo(1045,200, platform);
     }
-
     private void startGameLoop() {
         gameThread = new Thread(this);
         gameThread.start();
@@ -43,7 +42,7 @@ public class Game implements Runnable{
             platform.respawnPlayer(this); //Respawn the player
         }
         
-        player2.update2();
+        player2.update();
         if(platform.isPlayerFalling2(this)) {
             platform.respawnPlayer2(this); //Respawn the player2
         }

@@ -46,11 +46,23 @@ public class Player extends Entity {
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
 	
-	 // Hitbox variables
+	 // body Hitbox  variables
     private int hitboxOffsetX = 30; // Adjust as needed
     private int hitboxOffsetY = 0; // Adjust as needed
     private int hitboxWidth = 60; // Adjust as needed
     private int hitboxHeight = 110; // Adjust as needed
+    
+    //attack hitbox
+    private int ATKhitboxOffsetX = 30; // Adjust as needed
+    private int ATKhitboxOffsetY = 0; // Adjust as needed
+    private int ATKhitboxWidth = 60; // Adjust as needed
+    private int ATKhitboxHeight = 110; // Adjust as needed
+    
+    //block hitbox
+    private int BLKhitboxOffsetX = 30; // Adjust as needed
+    private int BLKhitboxOffsetY = 0; // Adjust as needed
+    private int BLKhitboxWidth = 60; // Adjust as needed
+    private int BLKhitboxHeight = 110; // Adjust as needed
     
 
     public Player(float x, float y, Platform platform) {
@@ -77,6 +89,7 @@ public class Player extends Entity {
 
             case IDLE:
             	g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
+            	 g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
                 break;
                 
             case RUNNING:
@@ -101,29 +114,36 @@ public class Player extends Entity {
             case ATTACK:
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(strikeAni[aniAtkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
+                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
+                g.drawRect((int) x + ATKhitboxOffsetX + 60, (int) y + ATKhitboxOffsetY +30 , ATKhitboxWidth, ATKhitboxHeight - 100);
                 break;
-             
+                 
             case SUNGKIT:
             	g.drawImage(sungkitAni[aniSungkitIndex], (int) x, (int) y - 40, 150, 150, null);
             	break;
                 
             case CROUCH:
             	g.drawImage(downAni[aniDownIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
+            	g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY + 15, hitboxWidth, hitboxHeight- 10);
                 break;
                
             case DOWNBLOCK:
             	g.drawImage(downBlockAni[aniDownBlockIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
+                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
+                g.drawRect((int) x + BLKhitboxOffsetX + 90, (int) y + BLKhitboxOffsetY + 10 , BLKhitboxWidth - 50, BLKhitboxHeight - 10 );
                 break;
                 
             default:
                 // Render idle animation
                 g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
+                
+             // Draw the hitbox (for debugging)
+                g.setColor(Color.RED);
+                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight - 40);
                 break;
         	}
         	
-        	// Draw the hitbox (for debugging)
-            g.setColor(Color.RED);
-            g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
+        	
             
         }
 

@@ -15,7 +15,7 @@ public class GameWindow{
 	    frame.add(GP);
 	    frame.setResizable(true);
 	    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-	    frame.setUndecorated(true); 
+//	    frame.setUndecorated(true); 
 	    frame.pack();
 	    
 	    frame.addWindowFocusListener(new WindowFocusListener(){
