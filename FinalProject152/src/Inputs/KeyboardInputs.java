@@ -2,10 +2,13 @@ package Inputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+
 import LABANAN.GamePanel;
 
 public class KeyboardInputs implements KeyListener {
     private GamePanel GP;
+    private long lastAttackTimePlayer = 0;
     private long lastAttackTimePlayer2 = 0;  // Store the last time Player 2's attack was triggered
     private static final long ATTACK_COOLDOWN = 1000;  // 3 seconds cooldown in milliseconds
 
@@ -20,6 +23,8 @@ public class KeyboardInputs implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+    	long currentTime = System.currentTimeMillis();
+    	
         // PLAYER 1
         switch (e.getKeyCode()) {
             case KeyEvent.VK_A:
@@ -33,14 +38,35 @@ public class KeyboardInputs implements KeyListener {
                 GP.getGame().getPlayer().setRight(true);
                 GP.getGame().getPlayer().setLeft(false);
                 break;
-            case KeyEvent.VK_SPACE:
-                GP.getGame().getPlayer().setJumped(true);
+            case KeyEvent.VK_F:
+            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer().setAttacking(true);  // Trigger attack
+                    lastAttackTimePlayer = currentTime;  // Update the last attack time
+                }
+                break;
+            case KeyEvent.VK_G:
+            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer().setBlocking(true);  // Trigger attack
+                    lastAttackTimePlayer = currentTime;  // Update the last attack time
+                }
+                break;
+            case KeyEvent.VK_W:
+            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer().setJumped(true);  // Trigger attack
+                    lastAttackTimePlayer = currentTime;  // Update the last attack time
+                }
                 break;
             case KeyEvent.VK_C:
-                GP.getGame().getPlayer().setSungkit(true);
+            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer().setSungkit(true);  // Trigger attack
+                    lastAttackTimePlayer = currentTime;  // Update the last attack time
+                }
                 break;
             case KeyEvent.VK_V:
-                GP.getGame().getPlayer().setLaunch(true);
+            	if (currentTime - lastAttackTimePlayer >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer().setLaunch(true);  // Trigger attack
+                    lastAttackTimePlayer = currentTime;  // Update the last attack time
+                }
                 break;
         }
 
@@ -58,10 +84,12 @@ public class KeyboardInputs implements KeyListener {
                 GP.getGame().getPlayer2().setLeft(false);
                 break;
             case KeyEvent.VK_UP:
-                GP.getGame().getPlayer2().setJumped(true);
+            	if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer2().setJumped(true);  // Trigger attack
+                    lastAttackTimePlayer2 = currentTime;  // Update the last attack time
+                }
                 break;
             case KeyEvent.VK_J:
-                long currentTime = System.currentTimeMillis();
                 // Check if enough time has passed since the last attack
                 if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
                     GP.getGame().getPlayer2().setAttacking(true);  // Trigger attack
@@ -69,13 +97,23 @@ public class KeyboardInputs implements KeyListener {
                 }
                 break;
             case KeyEvent.VK_K:
-                GP.getGame().getPlayer2().setSungkit(true);
+                // Check if enough time has passed since the last attack
+                if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer2().setSungkit(true);  // Trigger attack
+                    lastAttackTimePlayer2 = currentTime;  // Update the last attack time
+                }
                 break;
             case KeyEvent.VK_L:
-                GP.getGame().getPlayer2().setLaunch(true);
+            	if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer2().setLaunch(true);  // Trigger attack
+                    lastAttackTimePlayer2 = currentTime;  // Update the last attack time
+                }
                 break;
             case KeyEvent.VK_P:
-                GP.getGame().getPlayer2().setBlocking(true);
+            	if (currentTime - lastAttackTimePlayer2 >= ATTACK_COOLDOWN) {
+                    GP.getGame().getPlayer2().setBlocking(true);  // Trigger attack
+                    lastAttackTimePlayer2 = currentTime;  // Update the last attack time
+                }
                 break;
         }
     }
@@ -93,9 +131,13 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_D:
                 GP.getGame().getPlayer().setRight(false);
                 break;
-            case KeyEvent.VK_SPACE:
+            case KeyEvent.VK_W:
                 GP.getGame().getPlayer().setJumped(false);
                 break;
+            case KeyEvent.VK_F:
+                    GP.getGame().getPlayer().setAttacking(false);  // Trigger attack
+            case KeyEvent.VK_G:
+                GP.getGame().getPlayer().setBlocking(false);  // Trigger attack
             case KeyEvent.VK_C:
                 GP.getGame().getPlayer().setSungkit(false);
                 break;

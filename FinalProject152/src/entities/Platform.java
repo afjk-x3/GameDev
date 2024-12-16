@@ -2,7 +2,6 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
-
 import LABANAN.Game;
 
 public class Platform {

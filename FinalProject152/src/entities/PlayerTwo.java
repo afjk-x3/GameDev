@@ -79,7 +79,7 @@ public class PlayerTwo extends Entity {
         updatePos();
         updateAnimationTick();
         setAnimation();
-      
+        
     }
 
  public void render(Graphics g) {
@@ -96,15 +96,21 @@ public class PlayerTwo extends Entity {
             case RUNNING:
                 // Render running animation
             	g.drawImage(runAni[aniRunIndex], (int) x  - 40 , (int) y - 40 , 150 , 150, null);
+            	g.setColor(Color.RED);
+                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
                 break;
                 
             case RUNNINGATLEFT:
                 // Render running animation
             	g.drawImage(runAniLeft[aniRunLeftIndex], (int) x  - 40  , (int) y - 40 , 150 , 150, null);
+            	g.setColor(Color.RED);
+                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
                 break;
                 
             case JUMP:
             	g.drawImage(jumpAni[aniJumpIndex], (int) x  - 40 , (int) y - 40, 150, 150, null);
+            	g.setColor(Color.RED);
+                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
             	break;
             	
             case LAUNCH:
@@ -121,6 +127,7 @@ public class PlayerTwo extends Entity {
              
             case SUNGKIT:
             	g.drawImage(sungkitAni[aniSungkitIndex], (int) x  - 40 , (int) y - 40, 150, 150, null);
+            	g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY + 15, hitboxWidth, hitboxHeight- 10);
             	break;
                 
             case CROUCH:
@@ -205,11 +212,6 @@ public class PlayerTwo extends Entity {
             aniRunIndex++;
             if (aniRunIndex >= GetSpriteAmount(playerAction)) {
                 aniRunIndex = 0;
-                // Stop the attack animation once it completes
-//                if (right && left) {
-//                    right = false;
-//                    left = false;
-//                }
             }
         }
         
@@ -219,11 +221,6 @@ public class PlayerTwo extends Entity {
             aniRunLeftIndex++;
             if (aniRunLeftIndex >= GetSpriteAmount(playerAction)) {
                 aniRunLeftIndex = 0;
-                // Stop the attack animation once it completes
-//                if (left && right) {
-//                    left = false;
-//                    right = false;
-//                }
             }
         }
         

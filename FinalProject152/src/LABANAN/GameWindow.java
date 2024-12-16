@@ -10,7 +10,7 @@ public class GameWindow{
 	private JFrame frame;
 	
 	public GameWindow(GamePanel GP) {
-	    frame = new JFrame("Game Window");
+	    frame = new JFrame("LABANAN");
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.add(GP);
 	    frame.setResizable(true);

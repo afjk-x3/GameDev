@@ -14,9 +14,10 @@ public class MainMenu extends JPanel {
         loadMenuBackgroundImage();
 
         // Set up the main frame
-        mainFrame = new JFrame("Main Menu");
+        mainFrame = new JFrame("LABANAN");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(800, 600);
+        mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setLayout(new BorderLayout());
 
@@ -26,20 +27,15 @@ public class MainMenu extends JPanel {
         // Add menu components
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(180, 50, -150, 50);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Title Label
-        JLabel titleLabel = new JLabel("LABANAN", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
-        titleLabel.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(titleLabel, gbc);
 
         // Start Button
         JButton startButton = new JButton("Start Game");
         startButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        startButton.setBackground(Color.RED);
+//        startButton.setForeground(Color.PINK);
+        startButton.setFocusPainted(false);   // Remove focus outline
         gbc.gridy = 1;
         add(startButton, gbc);
 
@@ -62,7 +58,7 @@ public class MainMenu extends JPanel {
 
     private void loadMenuBackgroundImage() {
         try {
-            menuBG = ImageIO.read(getClass().getResourceAsStream("/bg2.png"));
+            menuBG = ImageIO.read(getClass().getResourceAsStream("/menu.png"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error loading background image");
