@@ -16,9 +16,9 @@ public class MainMenu extends JPanel {
         // Set up the main frame
         mainFrame = new JFrame("LABANAN");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(800, 600);
-//        mainFrame.setResizable(false);
-        mainFrame.setLocationRelativeTo(null);
+        mainFrame.setResizable(true);
+        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	    mainFrame.setUndecorated(true); 
         mainFrame.setLayout(new BorderLayout());
 
         // Add the main menu (this panel) to the frame
@@ -27,7 +27,7 @@ public class MainMenu extends JPanel {
         // Add menu components
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(180, 50, -150, 50);
+        gbc.insets = new Insets(280, 50, -240, 50);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Start Button
@@ -36,6 +36,7 @@ public class MainMenu extends JPanel {
         startButton.setBackground(Color.RED);
 //        startButton.setForeground(Color.PINK);
         startButton.setFocusPainted(false);   // Remove focus outline
+        startButton.setPreferredSize(new Dimension(200, 70));
         gbc.gridy = 1;
         add(startButton, gbc);
 
@@ -43,6 +44,7 @@ public class MainMenu extends JPanel {
         JButton exitButton = new JButton("Exit Game");
         exitButton.setFont(new Font("Arial", Font.PLAIN, 24));
         gbc.gridy = 2;
+        exitButton.setPreferredSize(new Dimension(200, 50));
         add(exitButton, gbc);
 
         // Add Action Listeners

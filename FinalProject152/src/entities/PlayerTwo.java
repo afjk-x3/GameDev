@@ -49,12 +49,6 @@ public class PlayerTwo extends Entity {
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
 
-	 // body Hitbox  variables
-    private int hitboxOffsetX = 30; // Adjust as needed
-    private int hitboxOffsetY = 0; // Adjust as needed
-    private int hitboxWidth = 60; // Adjust as needed
-    private int hitboxHeight = 110; // Adjust as needed
-
     public PlayerTwo(float x, float y, Platform platform) {
         super(x, y);
         this.x = x;
@@ -66,62 +60,34 @@ public class PlayerTwo extends Entity {
         
     }
     
-    public Rectangle getHitbox() {
-        return new Rectangle((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-    }
-    
-    public boolean checkCollision(Player player) {
-        return this.getHitbox().intersects(player.getHitbox());
-    }
-    
-    
-    public Rectangle getAtkHitbox() {
-        return new Rectangle ((int) x + hitboxOffsetX - 80, (int) y + hitboxOffsetY +30 , hitboxWidth + 20, hitboxHeight - 100);
-    }
-    
-    public boolean checkAtkCollision(Player player) {
-        
-        return this.getAtkHitbox().intersects(player.getAtkHitbox());
-    }
-    
-  
-
-    public void update() {
+   public void update() {
         updatePos();
         updateAnimationTick();
         setAnimation();
         
     }
 
- public void render(Graphics g) {
+   public void render(Graphics g) {
     	
         // Render based on the current player action (IDLE, RUNNING, or ATTACK)
         	switch(playerAction) {
 
             case IDLE:
             	g.drawImage(idleAni[aniIndex], (int) x  - 40 , (int) y - 40, 150, 150, null);
-            	 g.setColor(Color.RED);
-                 g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                break;
+            	break;
                 
             case RUNNING:
                 // Render running animation
             	g.drawImage(runAni[aniRunIndex], (int) x  - 40 , (int) y - 40 , 150 , 150, null);
-            	g.setColor(Color.RED);
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                break;
+            	break;
                 
             case RUNNINGATLEFT:
                 // Render running animation
             	g.drawImage(runAniLeft[aniRunLeftIndex], (int) x  - 40  , (int) y - 40 , 150 , 150, null);
-            	g.setColor(Color.RED);
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                break;
+            	break;
                 
             case JUMP:
             	g.drawImage(jumpAni[aniJumpIndex], (int) x  - 40 , (int) y - 40, 150, 150, null);
-            	g.setColor(Color.RED);
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
             	break;
             	
             case LAUNCH:
@@ -132,39 +98,26 @@ public class PlayerTwo extends Entity {
             case ATTACK:
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(strikeAni[aniAtkIndex], (int) x  - 40 , (int) y - 40, 150, 150, null); // Adjust position if necessary
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                g.drawRect((int) x + hitboxOffsetX - 80, (int) y + hitboxOffsetY +30 , hitboxWidth + 20, hitboxHeight - 100);//ATTACK HITBOX
                 break;
              
             case SUNGKIT:
             	g.drawImage(sungkitAni[aniSungkitIndex], (int) x  - 40 , (int) y - 40, 150, 150, null);
-            	g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY + 15, hitboxWidth, hitboxHeight- 10);
             	break;
                 
             case CROUCH:
             	g.drawImage(downAni[aniDownIndex], (int) x - 40 , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
-            	g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY + 15, hitboxWidth, hitboxHeight- 10);
-            	
-                break;
+            	break;
                
             case DOWNBLOCK:
             	g.drawImage(downBlockAni[aniDownBlockIndex], (int) x  - 40  , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
                 break;
                 
             default:
                 // Render idle animation
                 g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
-                
-                
-             // Draw the hitbox (for debugging)
-                g.setColor(Color.RED);
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
                 break;
         	}
         	
-        	
-            
         }
     private void updateAnimationTick() {
     	
@@ -522,7 +475,6 @@ public class PlayerTwo extends Entity {
         }
 	
     }
-    
 
     public void resetDirBooleans() {
         left = false;
@@ -545,7 +497,6 @@ public class PlayerTwo extends Entity {
 //    		aniIndex = 0;
     	}
     }
-
     
     public boolean isAttacking() {
         return attacking;

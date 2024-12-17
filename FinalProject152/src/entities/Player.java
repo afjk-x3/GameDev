@@ -20,7 +20,7 @@ public class Player extends Entity {
 	private int width, height;
 	
  
-	private BufferedImage[] runAniLeft;
+	private BufferedImage[] runAniLeft, idleAniLeft;
     private BufferedImage[] idleAni, pugayAni, strikeAni, jumpAni, runAni, sungkitAni, downAni, jumpAttkAni, downBlockAni;
     
     private int aniPugayTick, aniPugayIndex, aniPugaySpeed = 45;
@@ -28,6 +28,7 @@ public class Player extends Entity {
     private int aniDownIndex;
     private int aniAtkTick, aniAtkIndex, aniAtkSpeed = 21;//ATTACK
     private int aniTick, aniIndex, aniSpeed = 21; //IDLE
+    private int aniTickLeft, aniIndexLeft, aniSpeedLeft = 21; //IDLE
     private int aniJumpTick, aniJumpIndex, aniJumpSpeed = 21;//JUMP
     private int aniJumpAttkTick, aniJumpAttkIndex, aniJumpAttkSpeed = 21;//JUMP
     private int aniRunTick, aniRunIndex, aniRunSpeed= 21;//MOVE
@@ -46,21 +47,12 @@ public class Player extends Entity {
 	private boolean crouching = false;
 	private boolean jumpAttacking = false;
 	private boolean jump = false;
-	
-	 // body Hitbox  variables
-    private int hitboxOffsetX = 30; // Adjust as needed
-    private int hitboxOffsetY = 0; // Adjust as needed
-    private int hitboxWidth = 60; // Adjust as needed
-    private int hitboxHeight = 110; // Adjust as needed
-    
-    // body Hitbox  variables
-    private int AtkhitboxOffsetX = 90; // Adjust as needed
-    private int AtkhitboxOffsetY = 30; // Adjust as needed
-    private int AtkhitboxWidth = 60; // Adjust as needed
-    private int AtkhitboxHeight = 10; // Adjust as needed
-    
-  
 
+	//new
+	private boolean isDead = false;
+	private String lastDirection = "right";
+	private boolean isBlocking = false;
+	
     public Player(float x, float y, Platform platform) {
         super(x, y);
         this.x = x;
@@ -69,23 +61,6 @@ public class Player extends Entity {
         this.height = 100;
         this.platform = platform; // Assign the platform for collision checks
         loadAnimations();
-    }
-    //BODY
-    public Rectangle getHitbox() {
-        return new Rectangle((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-    }
-    public Rectangle getAtkHitbox() {
-        return new Rectangle((int) x + AtkhitboxOffsetX , (int) y + AtkhitboxOffsetY  , AtkhitboxWidth, AtkhitboxHeight );
-    }
-    
-    
-    public boolean checkCollision(PlayerTwo player2) {
-        return this.getHitbox().intersects(player2.getHitbox());
-    }
-    
-    public boolean checkAtkCollision(PlayerTwo player2) {
-       
-        return this.getAtkHitbox().intersects(player2.getAtkHitbox());
     }
     
     public void update() {
@@ -96,14 +71,20 @@ public class Player extends Entity {
     }
 
     public void render(Graphics g) {
+    	if(isDead) return;
     	
         // Render based on the current player action (IDLE, RUNNING, or ATTACK)
         	switch(playerAction) {
 
             case IDLE:
             	g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
-            	 g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                break;
+            	g.drawRect((int) x + 30, (int) y - 1, 60, 110);
+            	break;
+            	
+            case IDLELEFT:
+            	g.drawImage(idleAniLeft[aniIndexLeft], (int) x, (int) y - 40, 150, 150, null);
+            	g.drawRect((int) x + 60, (int) y - 1, 60, 110);
+            	break;
                 
             case RUNNING:
                 // Render running animation
@@ -127,8 +108,6 @@ public class Player extends Entity {
             case ATTACK:
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(strikeAni[aniAtkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
-                g.drawRect((int) x + hitboxOffsetX , (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                g.drawRect((int) x + AtkhitboxOffsetX , (int) y + AtkhitboxOffsetY  , AtkhitboxWidth, AtkhitboxHeight);
                 break;
                  
             case SUNGKIT:
@@ -137,26 +116,17 @@ public class Player extends Entity {
                 
             case CROUCH:
             	g.drawImage(downAni[aniDownIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
-            	g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY + 15, hitboxWidth, hitboxHeight- 10);
                 break;
                
             case DOWNBLOCK:
             	g.drawImage(downBlockAni[aniDownBlockIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-               
                 break;
                 
             default:
                 // Render idle animation
                 g.drawImage(idleAni[aniIndex], (int) x, (int) y - 40, 150, 150, null);
-                
-             // Draw the hitbox (for debugging)
-                g.setColor(Color.RED);
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight - 40);
                 break;
         	}
-        	
-        	
             
         }
 
@@ -169,6 +139,15 @@ public class Player extends Entity {
             aniIndex++;
             if (aniIndex >= GetSpriteAmount(playerAction)) {
                 aniIndex = 0;
+            }
+        }
+        
+        aniTickLeft++;
+        if (aniTickLeft >= aniSpeedLeft) {
+            aniTickLeft = 0;
+            aniIndexLeft++;
+            if (aniIndexLeft >= GetSpriteAmount(playerAction)) {
+                aniIndexLeft = 0;
             }
         }
     	
@@ -348,13 +327,18 @@ public class Player extends Entity {
         } else if (jumpAttacking) {
             playerAction = LAUNCH;
         } else {
-            playerAction = IDLE; // Default idle
+        	if(movingLeft) {
+        		playerAction = IDLELEFT;
+        	}else {
+        		playerAction = IDLE; // Default idle
+        	}
         }
     }
 
     private void loadAnimations() {
     	
     	InputStream idle = getClass().getResourceAsStream("/Sprite_Idle(RIGHT).png");
+    	InputStream idleLeft = getClass().getResourceAsStream("/Sprite_Idle(LEFT).png");
         InputStream pugay = getClass().getResourceAsStream("/Sprite_Pugay(RIGHT).png");
         InputStream strike = getClass().getResourceAsStream("/Sprite_StrikeOnly(RIGHT).png");
         InputStream run = getClass().getResourceAsStream("/Sprite_Running(RIGHT).png");
@@ -365,6 +349,22 @@ public class Player extends Entity {
         InputStream launch = getClass().getResourceAsStream("/Sprite_JumpAtk(RIGHT).png");
         InputStream downBlock = getClass().getResourceAsStream("/Sprite_CrouchBlock.png");
 
+        try {
+            BufferedImage imgLeft = ImageIO.read(idleLeft);
+            idleAniLeft = new BufferedImage[6]; // Ensure the correct number of frames here
+            for (int i = 0; i < idleAniLeft.length; i++) {
+                idleAniLeft[i] = imgLeft.getSubimage(i * 64, 0, 64, 64);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                idleLeft.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
         try {
             BufferedImage img = ImageIO.read(idle);
             idleAni = new BufferedImage[6]; // Ensure the correct number of frames here
@@ -527,8 +527,6 @@ public class Player extends Entity {
 	
     }
 
-    
-    
     public void resetDirBooleans() {
         left = false;
         right = false;
@@ -574,6 +572,10 @@ public class Player extends Entity {
     }
     public void setCrouch(boolean crouch) {
     	this.crouching = crouch;
+    }
+    
+    public void block() {
+    	isBlocking = true;
     }
     
     public boolean isBlocking() {
@@ -632,5 +634,16 @@ public class Player extends Entity {
         this.height = height;
     }
 
+    public void moveLeft() {
+        if (!isDead) {
+            lastDirection = "left";  // Update the last direction
+        }
+    }
+
+    public void moveRight() {
+        if (!isDead) {
+            lastDirection = "right";  // Update the last direction
+        }
+    }
     
 }
