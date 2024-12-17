@@ -50,6 +50,8 @@ public class Constant {
 //			case GROUND:
 //			case HIT:
 			case ATTACK:
+				
+				
 				return 5;
 				
 			case ATTACKLEFT:

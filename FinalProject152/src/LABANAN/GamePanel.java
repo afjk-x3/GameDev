@@ -15,13 +15,13 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import Inputs.KeyboardInputs;
-import Inputs.MouseInputs;
+
 
 public class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 2233953016340222282L;
     
-    private MouseInputs MI;
+   
     private Game game;
     private Image bg; // Declare the image variable for the background
     private Image mainPlatform, leftPlatform, rightPlatform;
@@ -30,15 +30,14 @@ public class GamePanel extends JPanel {
     private int exitButtonX, exitButtonY, exitButtonWidth, exitButtonHeight;
 
     public GamePanel(Game game) {
-        MI = new MouseInputs(this);
+      
         this.game = game;
 
         setPanelSize();
         loadBackgroundImage(); // Load the image here
         loadPlatformImage();
         addKeyListener(new KeyboardInputs(this));
-        addMouseListener(MI);
-        addMouseMotionListener(MI);
+    
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}

@@ -17,7 +17,7 @@ public class MainMenu extends JPanel {
         mainFrame = new JFrame("LABANAN");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(800, 600);
-        mainFrame.setResizable(false);
+//        mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setLayout(new BorderLayout());
 

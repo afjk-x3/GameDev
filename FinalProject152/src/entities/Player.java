@@ -4,6 +4,7 @@ import static utilz.Constant.PlayerConstants.*;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,18 +53,13 @@ public class Player extends Entity {
     private int hitboxWidth = 60; // Adjust as needed
     private int hitboxHeight = 110; // Adjust as needed
     
-    //attack hitbox
-    private int ATKhitboxOffsetX = 30; // Adjust as needed
-    private int ATKhitboxOffsetY = 0; // Adjust as needed
-    private int ATKhitboxWidth = 60; // Adjust as needed
-    private int ATKhitboxHeight = 110; // Adjust as needed
+    // body Hitbox  variables
+    private int AtkhitboxOffsetX = 90; // Adjust as needed
+    private int AtkhitboxOffsetY = 30; // Adjust as needed
+    private int AtkhitboxWidth = 60; // Adjust as needed
+    private int AtkhitboxHeight = 10; // Adjust as needed
     
-    //block hitbox
-    private int BLKhitboxOffsetX = 30; // Adjust as needed
-    private int BLKhitboxOffsetY = 0; // Adjust as needed
-    private int BLKhitboxWidth = 60; // Adjust as needed
-    private int BLKhitboxHeight = 110; // Adjust as needed
-    
+  
 
     public Player(float x, float y, Platform platform) {
         super(x, y);
@@ -74,7 +70,24 @@ public class Player extends Entity {
         this.platform = platform; // Assign the platform for collision checks
         loadAnimations();
     }
-
+    //BODY
+    public Rectangle getHitbox() {
+        return new Rectangle((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
+    }
+    public Rectangle getAtkHitbox() {
+        return new Rectangle((int) x + AtkhitboxOffsetX , (int) y + AtkhitboxOffsetY  , AtkhitboxWidth, AtkhitboxHeight );
+    }
+    
+    
+    public boolean checkCollision(PlayerTwo player2) {
+        return this.getHitbox().intersects(player2.getHitbox());
+    }
+    
+    public boolean checkAtkCollision(PlayerTwo player2) {
+       
+        return this.getAtkHitbox().intersects(player2.getAtkHitbox());
+    }
+    
     public void update() {
         updatePos();
         updateAnimationTick();
@@ -114,8 +127,8 @@ public class Player extends Entity {
             case ATTACK:
                 // Render attack animation (should be shown in a different layer or position if needed)
                 g.drawImage(strikeAni[aniAtkIndex], (int) x, (int) y - 40, 150, 150, null); // Adjust position if necessary
-                g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                g.drawRect((int) x + ATKhitboxOffsetX + 60, (int) y + ATKhitboxOffsetY +30 , ATKhitboxWidth, ATKhitboxHeight - 100);
+                g.drawRect((int) x + hitboxOffsetX , (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
+                g.drawRect((int) x + AtkhitboxOffsetX , (int) y + AtkhitboxOffsetY  , AtkhitboxWidth, AtkhitboxHeight);
                 break;
                  
             case SUNGKIT:
@@ -130,7 +143,7 @@ public class Player extends Entity {
             case DOWNBLOCK:
             	g.drawImage(downBlockAni[aniDownBlockIndex], (int) x , (int) y - 40, 150, 150 , null);  // Adjust size for crouching
                 g.drawRect((int) x + hitboxOffsetX, (int) y + hitboxOffsetY, hitboxWidth, hitboxHeight);
-                g.drawRect((int) x + BLKhitboxOffsetX + 90, (int) y + BLKhitboxOffsetY + 10 , BLKhitboxWidth - 50, BLKhitboxHeight - 10 );
+               
                 break;
                 
             default:

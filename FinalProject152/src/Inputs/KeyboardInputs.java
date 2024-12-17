@@ -41,6 +41,7 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_F:
             	if (currentTime - lastAttackTimePlayer >= COOLDOWN) {
                     GP.getGame().getPlayer().setAttacking(true);  // Trigger attack
+                    
                     lastAttackTimePlayer = currentTime;  // Update the last attack time
                 }
                 break;

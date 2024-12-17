@@ -42,6 +42,19 @@ public class Game implements Runnable{
             platform.respawnPlayer(this); //Respawn the player
         }
         
+
+
+       
+
+        if (player.checkAtkCollision(player2) && player2.checkCollision(player)) {
+            // Handle block collision between player and player2
+            // ...
+            System.out.println("Player 1 blocked Player 2's attack!");
+            // Prevent damage to player (add logic here if you have health)
+            // Play block sound effect (add logic here if you have sound)
+        }
+
+        
         player2.update();
         if(platform.isPlayerFalling2(this)) {
             platform.respawnPlayer2(this); //Respawn the player2
